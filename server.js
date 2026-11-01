@@ -18,9 +18,13 @@ io.on("connection", socket => {
     const others = [...members];
     members.add(socket.id); rooms.set(room, members);
     socket.emit("joined", { room, count: members.size, id: socket.id });
-    for (const id of others) io.to(id).emit("peer-joined", { id: socket.id, name: socket.data.name });
     const existing = others[0];
-    if (existing) socket.emit("peer-joined", { id: existing, name: io.sockets.sockets.get(existing)?.data.name || "Convidado" });
+    if (existing) {
+      // The already-connected participant initiates WebRTC negotiation.
+      // Avoid simultaneous offers ("glare") from both browsers.
+      io.to(existing).emit("peer-joined", { id: socket.id, name: socket.data.name });
+      socket.emit("room-peer", { id: existing, name: io.sockets.sockets.get(existing)?.data.name || "Convidado" });
+    }
   });
   for (const event of ["offer", "answer", "ice"]) socket.on(event, data => {
     if (data?.to && socket.data.room) io.to(data.to).emit(event, { ...data, from: socket.id });

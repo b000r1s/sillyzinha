@@ -25,3 +25,5 @@ NOTAS
 - O projeto permite até duas pessoas por sala.
 - Para conexões entre redes restritivas, pode ser necessário configurar um servidor TURN (credenciais próprias).
 - O compartilhamento de áudio do sistema depende do navegador e da opção selecionada na janela de compartilhamento.
+
+CORREÇÃO DE CONEXÃO: nesta versão, o participante que já está na sala inicia a negociação WebRTC; isso evita offers simultâneas que deixavam o convidado preso em 'conectando'.
